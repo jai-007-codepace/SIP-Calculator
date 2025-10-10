@@ -3,13 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SIP + Lumpsum Calculator — Chart + Growth Table</title>
+  <title>SIP + Lumpsum Calculator — Fast</title>
 
-  <!-- Professional fonts -->
 
 
   <style>
-:root {
+ :root {
   --bg:#f6f8fb;
   --card:#fff;
   --muted:#6b7280;
@@ -20,390 +19,545 @@
   --shadow:0 6px 18px rgba(20,20,40,0.08);
   font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
 }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(180deg,#f8fafc,var(--bg));color:#0f172a;-webkit-font-smoothing:antialiased}
+    .wrap{max-width:1200px;margin:28px auto;padding:18px;display:grid;gap:18px}
+    header{display:flex;gap:12px;align-items:center}
+    .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    h1{font-size:18px;margin:0}
+    p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  background:linear-gradient(180deg,#f8fafc,var(--bg));
-  color:#0f172a;
+    .row{display:grid;grid-template-columns:1fr 420px;gap:18px}
+    @media(max-width:1000px){.row{grid-template-columns:1fr}}
+    .card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:16px}
+
+/* ---------- Inputs & Form controls ---------- */
+label {
+  font-size: 13px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 6px;
 }
 
-.wrap{max-width:1200px;margin:28px auto;padding:18px;display:grid;gap:18px}
-header{display:flex;gap:12px;align-items:center}
-.logo{
-  width:46px;height:46px;border-radius:10px;
-  background:linear-gradient(135deg,var(--accent),#7c3aed);
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:700
-}
-h1{font-size:18px;margin:0}
-p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
-
-/* layout */
-.row{display:grid;grid-template-columns:1fr 420px;gap:18px}
-@media(max-width:1000px){.row{grid-template-columns:1fr}}
-.card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:16px}
-
-label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
-input[type=number],select{
-  width:100%;padding:10px;border-radius:8px;
-  border:1px solid #e6edf3;background:#fbfdff;font-size:14px
-}
-.row-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
-/* Inputs card layout */
-.inputs-grid{display:grid;gap:12px}
-.inputs-row-full{display:block}
-.inputs-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.inputs-row-3{display:grid;grid-template-columns:1fr 220px;gap:12px;align-items:end}
-
-/* mobile responsiveness */
-@media(max-width:760px){
-  .inputs-row-2,.inputs-row-3{grid-template-columns:1fr}
-  .inputs-row-3 .actions{justify-self:stretch;display:flex;justify-content:flex-start;gap:8px}
+input[type="number"],
+select,
+.input-field {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+  background: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
-/* --- INPUT HIGHLIGHT BOXES --- */
-.input-highlight{
-  border-radius:10px;padding:12px;
-  background:linear-gradient(180deg,#ffffff,#fbfdff);
-  border:1px solid #edf2f7;
-  display:flex;align-items:center;
-}
-.input-lumpsum{box-shadow:inset 4px 0 0 0 rgba(37,99,235,0.08)}
-
-.input-block{display:flex;flex-direction:column;gap:6px;width:100%}
-.input-label{font-size:13px;color:var(--muted);margin-bottom:4px}
-.input-field{
-  width:100%;padding:10px;border-radius:8px;
-  border:1px solid #e6edf3;background:#fff;font-size:14px
+/* Default full-width behavior for most inputs */
+input[type="number"],
+select {
+  width: 100%;
+  background: #fbfdff;
 }
 
-/* Unified SIP box */
-.input-sip{
-  border-radius:10px;
-  padding:14px;
-  background:linear-gradient(180deg,#ffffff,#fbfdff);
-  border:1px solid #e6edf3;
-  box-shadow:inset 4px 0 0 0 rgba(124,58,237,0.6);
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  align-items:end;
+/* Row helper */
+.row-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-/* === FINAL: Years + CAGR + Buttons on one line === */
-.input-actions{
-  display:flex;
-  align-items:center;
-  gap:16px;
-  flex-wrap:nowrap;       /* prevent wrapping on large screens */
-  margin-top:12px;
+/* ---------- Highlight boxes: lumpsum & SIP ---------- */
+.input-highlight {
+  border-radius: 10px;
+  padding: 12px;
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border: 1px solid #edf2f7;
+  display: flex;
+  align-items: center;
 }
 
-.inline-inputs,.inline-input{
-  display:flex;
-  gap:12px;
-  align-items:flex-end;
-  flex-wrap:nowrap;
+.input-lumpsum {
+  box-shadow: inset 4px 0 0 0 rgba(37, 99, 235, 0.8);
 }
 
-.actions{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  margin-left:auto;       /* push buttons to right */
+.input-sip {
+  border-radius: 10px;
+  padding: 14px;
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border: 1px solid #e6edf3;
+  box-shadow: inset 4px 0 0 0 rgba(124, 58, 237, 0.6);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: end;
 }
 
-.actions .btn{
-  min-width:84px;
-  padding:8px 10px;
-  font-size:13px;
+/* block inside highlight */
+.input-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
 }
 
-/* allow wrap on smaller screens */
-@media(max-width:780px){
-  .input-actions{
-    flex-wrap:wrap;
-    align-items:flex-start;
+/* ---------- Compact inputs (Years / CAGR) ---------- */
+/* Default compact width (stronger rule to override global input width) */
+.input-small {
+  width: 90px !important;
+  max-width: 120px;
+  box-sizing: border-box;
+}
+
+/* Inline inputs container: keeps children compact and prevents them stretching */
+.inline-inputs {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: nowrap;
+}
+
+/* Ensure each inline child remains auto-sized */
+.inline-inputs > div {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* Prevent inline inputs from stretching to 100% */
+.inline-inputs .input-field {
+  width: auto;
+}
+
+/* Force small variant to keep exact width */
+.inline-inputs .input-field.input-small {
+  width: 90px;
+}
+
+/* ---------- Row containing Years, CAGR and Buttons ---------- */
+.input-actions,
+.input-row-line {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: nowrap;
+  margin-top: 12px;
+}
+
+/* Buttons container — pushed to far right on wide screens */
+.actions,
+.actions-inline {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Slightly smaller button footprint so row fits comfortably */
+.actions .btn,
+.actions-inline .btn {
+  min-width: 84px;
+  padding: 8px 10px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+/* ---------- Buttons base styles ---------- */
+.btn {
+  border: 0;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  background: transparent;
+  color: inherit;
+}
+
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-ghost  { background: transparent; border: 1px solid #e6edf3; }
+
+/* ---------- Responsive behavior ---------- */
+/* ---------- Mobile layout: ensure everything fits without horizontal scroll ---------- */
+@media (max-width: 800px) {
+  /* Make the overall page padding slightly larger for touch comfort */
+  .wrap { padding: 20px; }
+
+  /* Force the main row to stack vertically and remove horizontal gaps */
+  .row { grid-template-columns: 1fr !important; gap: 14px; }
+
+  /* Chart / table become single column too */
+  .chart-table { grid-template-columns: 1fr !important; gap: 14px; }
+
+  /* Cards get more internal padding and full width */
+  .card {
+    padding: 18px;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
-  .inline-inputs{width:100%;margin-bottom:8px}
-  .actions{margin-left:0;width:100%;justify-content:flex-start}
+
+  /* Inputs highlights become full width and wrap their content */
+  .input-sip,
+  .input-highlight {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    box-sizing: border-box;
+  }
+
+  /* Inline inputs stack vertically and occupy full width */
+  .inline-inputs {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .inline-inputs > div {
+    flex: 1 1 48%; /* two-per-row where possible */
+    min-width: 0;
+  }
+  /* Force small inputs to remain usable but responsive */
+  .inline-inputs .input-field.input-small {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+  /* Buttons block below inputs and stretch full-width (or two across) */
+  .actions, .actions-inline {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .actions .btn, .actions-inline .btn {
+    min-width: 45%;
+    flex: 1 1 45%;
+    padding: 10px;
+  }
+
+  /* Prevent any accidental horizontal overflow */
+  html, body { overflow-x: hidden; }
+
+  /* Make table container fit inside card without horizontal scroll if possible */
+  #growthTableContainer { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Reduce chart margins */
+  #chartMain, #chart { margin-left: 0; margin-right: 0; }
+
+  /* Slightly reduce large font spaces */
+  .result-grid { gap: 8px; }
+  .value { font-size: 18px; padding: 8px 6px; }
+
+  /* Keep header compact */
+  header { gap: 10px; }
+  .logo { width:40px;height:40px }
 }
 
-/* Compact inputs for years & CAGR */
-.input-small{width:90px}
 
-/* Button general style */
-.btn{
-  border:0;padding:9px 12px;border-radius:8px;
-  cursor:pointer;font-weight:700
-}
-.btn-accent{background:var(--accent);color:#fff}
-.btn-ghost{background:transparent;border:1px solid #e6edf3}
+/* ---------- Minor helpers ---------- */
+.input-label { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.nowrap { white-space: nowrap; }
 
-/* Result cards */
-.result-grid{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.result-item{flex:1;min-width:140px}
-.value{font-size:22px;font-weight:800;padding:6px 8px;border-radius:8px;transition:all .3s ease}
-.positive{color:var(--success);background:#ecfdf5}
-.negative{color:var(--danger);background:#fef2f2}
-.neutral{color:var(--accent);background:#eff6ff}
-.small{font-size:12px;color:var(--muted)}
 
-/* Chart + Table layout */
-.chart-table{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:1000px){.chart-table{grid-template-columns:1fr}}
+    .result-grid{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .result-item{flex:1;min-width:140px}
+    .value{font-size:22px;font-weight:800;padding:6px 8px;border-radius:8px;transition:all .3s ease}
+    .positive{color:var(--success);background:#ecfdf5}
+    .negative{color:var(--danger);background:#fef2f2}
+    .neutral{color:var(--accent);background:#eff6ff}
+    .small{font-size:12px;color:var(--muted)}
 
-/* Table styles */
-#growthTableContainer{
-  max-width:100%;
-  max-height:420px;
-  overflow:auto;
-  padding-right:6px;
-}
-table.growth-table{
-  width:100%;
-  max-width:100%;
-  border-collapse:collapse;
-  font-size:14px;
-  background:transparent;
-  table-layout:auto;
-}
-table.growth-table th,table.growth-table td{
-  padding:10px;
-  border-bottom:1px solid #eef2f6;
-  text-align:left;
-  vertical-align:middle;
-}
-table.growth-table th{
-  background:#fbfdff;
-  color:var(--muted);
-  font-weight:700;
-  position:sticky;
-  top:0;
-  z-index:2;
-}
-table.growth-table tbody tr:hover{background:#fbfbfd}
+    .chart-table{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    @media(max-width:1000px){.chart-table{grid-template-columns:1fr}}
 
-/* Badges + table icons */
-.badge{display:inline-block;padding:6px 8px;border-radius:999px;font-weight:700;font-size:13px}
-.badge.green{background:#ecfdf5;color:var(--success)}
-.badge.red{background:#fff0f0;color:var(--danger)}
-.fa{margin-right:8px}
-.row-muted{color:var(--muted);font-size:12px}
+    /* Table */
+    #growthTableContainer{max-width:100%;max-height:420px;overflow:auto;padding-right:6px}
+    table.growth-table{width:100%;max-width:100%;border-collapse:collapse;font-size:14px;background:transparent;table-layout:auto}
+    table.growth-table th,table.growth-table td{padding:10px;border-bottom:1px solid #eef2f6;text-align:left;vertical-align:middle}
+    table.growth-table th{background:#fbfdff;color:var(--muted);font-weight:700;position:sticky;top:0;z-index:2}
+    table.growth-table tbody tr:hover{background:#fbfbfd}
 
-/* Styled table view buttons */
-.tbl-btn{
-  padding:8px 14px;border-radius:10px;border:0;
-  background:linear-gradient(180deg,#ffffff,#f3f8ff);
-  cursor:pointer;font-weight:700;color:#0f172a;
-  box-shadow:0 6px 16px rgba(37,99,235,0.04);
-}
-.tbl-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 14px 36px rgba(37,99,235,0.08);
-}
-.tbl-btn.active{
-  background:linear-gradient(180deg,var(--accent),#7c3aed);
-  color:#fff;
-  box-shadow:0 14px 40px rgba(37,99,235,0.12);
-}
-.tbl-btn.disabled{
-  opacity:.45;pointer-events:none;transform:none;box-shadow:none;
+    .badge{display:inline-block;padding:6px 8px;border-radius:999px;font-weight:700;font-size:13px}
+    .badge.green{background:#ecfdf5;color:var(--success)}
+    .badge.red{background:#fff0f0;color:var(--danger)}
+    .fa{margin-right:8px}
+    .row-muted{color:var(--muted);font-size:12px}
+
+    .tbl-btn{padding:8px 14px;border-radius:10px;border:0;background:linear-gradient(180deg,#ffffff,#f3f8ff);cursor:pointer;font-weight:700;color:#0f172a;box-shadow:0 6px 16px rgba(37,99,235,0.04)}
+    .tbl-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(37,99,235,0.5)}
+    .tbl-btn.active{background:linear-gradient(180deg,var(--accent),#7c3aed);color:#fff;box-shadow:0 14px 40px rgba(37,99,235,0.12)}
+    .tbl-btn.disabled{opacity:.45;pointer-events:none;transform:none;box-shadow:none}
+
+    .seg{padding:6px 8px;border-radius:8px;border:1px solid #e6edf3;background:#fff;cursor:pointer}
+    .seg.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .seg.disabled{opacity:.45;pointer-events:none}
+
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .nowrap{white-space:nowrap}
+    
+    /* Mobile: ultra-compact layout for very small phones (<400px) */
+@media (max-width: 399px) {
+  /* tighten overall padding for small screens */
+  .wrap { padding: 10px; }
+  .card { padding: 12px; border-radius: 10px; }
+
+  /* force main layout into single column */
+  .row { grid-template-columns: 1fr !important; gap: 12px; }
+  .chart-table { grid-template-columns: 1fr !important; gap: 12px; }
+
+  /* inputs: full-width stacked */
+  .input-sip, .input-highlight { display: block; padding: 12px; width: 100%; box-sizing: border-box; }
+  .input-sip .input-block, .input-highlight .input-block { width: 100%; }
+
+  /* inline inputs stack vertically, take full width */
+  .inline-inputs { flex-direction: column; gap: 8px; width: 100%; }
+  .inline-inputs > div { flex: 1 1 100%; min-width: 0; }
+
+  /* make small inputs full width (so they are usable) */
+  .inline-inputs .input-field.input-small,
+  .input-small { width: 100% !important; max-width: 100%; }
+
+  /* buttons: full-width, stacked (touch friendly) */
+  .actions, .actions-inline { margin-left: 0; width: 100%; gap: 8px; justify-content: stretch; flex-wrap: wrap; }
+  .actions .btn, .actions-inline .btn {
+    flex: 1 1 100%;
+    min-width: 0;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  /* reduce chart height to save vertical space */
+  #chartMain, #chart { height: 260px !important; min-height: 180px; }
+
+  /* table: allow horizontal scroll but reduce padding & font to fit */
+  #growthTableContainer { max-height: 320px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table.growth-table th, table.growth-table td { padding: 8px 6px; font-size: 12px; }
+  table.growth-table th { font-size: 12px; }
+
+  /* results: smaller, stacked if necessary */
+  .result-grid { gap: 8px; flex-direction: column; align-items: stretch; }
+  .value { font-size: 16px; padding: 8px; }
+
+  /* header compact */
+  header { gap: 8px; }
+  .logo { width: 36px; height: 36px; font-size: 14px; }
+
+  /* prevent any accidental horizontal overflow */
+  html, body { overflow-x: hidden; }
+
+  /* tiny helper to avoid very long labels causing overflow */
+  .nowrap { white-space: normal; word-break: break-word; }
 }
 
-/* Chart zoom segment buttons */
-.seg{
-  padding:6px 8px;border-radius:8px;
-  border:1px solid #e6edf3;background:#fff;cursor:pointer;
-}
-.seg.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.seg.disabled{opacity:.45;pointer-events:none}
-
-/* misc */
-.hint{font-size:12px;color:var(--muted);margin-top:6px}
-.nowrap{white-space:nowrap}
 
   </style>
 
-  <!-- jQuery + ApexCharts + FontAwesome -->
+  <!-- libs -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">SIP</div>
-      <div>
-        <h1>SIP + Lumpsum Calculator</h1>
-        <p class="lead">Supports Daily/Weekly/Monthly/Yearly contributions and an initial one-time lump sum. Chart + table use same series.</p>
+<div class="wrap">
+  <header>
+    <div class="logo">SIP</div>
+    <div>
+      <h1>SIP + Lumpsum Calculator</h1>
+      <p class="lead">Supports Daily/Weekly/Monthly/Yearly contributions and an initial one-time lump sum. Chart + table use same series.</p>
+    </div>
+  </header>
+
+  <!-- TOP ROW -->
+  <div class="row">
+    <!-- Inputs -->
+    <div class="card">
+      <h3 style="margin-top:0">Inputs</h3>
+
+      <!-- Row 1: One-time investment -->
+      <div class="input-highlight input-lumpsum" style="margin-top:6px;">
+        <div class="input-block">
+          <label class="input-label" for="lumpsum">Initial One-time Investment (₹)</label>
+          <input id="lumpsum" class="input-field" type="number" step="1" min="0" value="0" />
+        </div>
       </div>
-    </header>
 
-    <!-- TOP ROW -->
-    <div class="row">
-      <!-- Inputs -->
-     <div class="card">
-  <h3 style="margin-top:0">Inputs</h3>
+      <!-- Row 2: SIP frequency + amount (purple box) -->
+      <div class="input-sip" style="margin-top:12px;">
+        <div class="input-block">
+          <label class="input-label" for="freq">Contribution Frequency</label>
+          <select id="freq" class="input-field">
+            <option value="monthly">Monthly</option>
+            <option value="weekly">Weekly</option>
+            <option value="daily">Daily (22 days / month)</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
 
-  <!-- Row 1: One-time investment -->
-  <div class="input-highlight input-lumpsum" style="margin-top:6px;">
-    <div class="input-block">
-      <label class="input-label" for="lumpsum">Initial One-time Investment (₹)</label>
-      <input id="lumpsum" class="input-field" type="number" step="1" min="0" value="0" />
+        <div class="input-block">
+          <label class="input-label" for="amount">SIP Amount (per period)</label>
+          <input id="amount" class="input-field" type="number" step="1" min="0" value="1000" />
+        </div>
+      </div>
+
+      <!-- Row 3: Years + CAGR + Buttons in the same line -->
+      <div class="input-actions" style="margin-top:12px;">
+        <div class="inline-inputs">
+          <div>
+            <label class="input-label" for="years">Years 
+              <span id="yearsNote" class="hint" style="display:none">(max 2 years for Daily)</span>
+            </label>
+            <input id="years" class="input-field input-small" type="number" step="0.1" min="0.1" value="2" />
+          </div>
+
+          <div>
+            <label class="input-label" for="cagr">CAGR (%)</label>
+            <input id="cagr" class="input-field input-small" type="number" step="0.1" min="-100" value="12" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-accent" id="calcBtn">Calculate</button>
+          <button class="btn btn-ghost" id="resetBtn">Reset</button>
+          <button class="btn btn-ghost" id="exportBtn">Export CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="card">
+      <h3 style="margin-top:0">Results</h3>
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="small">Total Invested</div>
+          <div class="value neutral" id="invested">₹0</div>
+        </div>
+        <div class="result-item">
+          <div class="small">Future Value (Estimated)</div>
+          <div class="value positive" id="fv">₹0</div>
+        </div>
+        <div class="result-item">
+          <div class="small">Return (₹)</div>
+          <div class="value positive" id="roiAmt">₹0</div>
+        </div>
+        <div class="result-item">
+          <div class="small">Return (%)</div>
+          <div class="value positive" id="roiPct">0%</div>
+        </div>
+      </div>
+      <div class="row-muted" style="margin-top:10px">Tip: Lumpsum is invested at time 0 and compounds along with subsequent contributions.</div>
     </div>
   </div>
 
-  <!-- Row 2: SIP frequency + amount (purple box) -->
-  <div class="input-sip" style="margin-top:12px;">
-    <div class="input-block">
-      <label class="input-label" for="freq">Contribution Frequency</label>
-      <select id="freq" class="input-field">
-        <option value="monthly">Monthly</option>
-        <option value="weekly">Weekly</option>
-        <option value="daily">Daily (22 days / month)</option>
-        <option value="yearly">Yearly</option>
-      </select>
+  <!-- BOTTOM ROW: Chart + Table -->
+  <div class="chart-table">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Growth Chart</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <!-- top chart segment controls (unique IDs) -->
+          <div class="seg active" data-zoom="daily" id="segDaily">Daily</div>
+          <div class="seg" data-zoom="monthly" id="segMonthly">Monthly</div>
+          <div class="seg" data-zoom="yearly" id="segYearly">Yearly</div>
+        </div>
+      </div>
+      <!-- single chart container (unique ID) -->
+      <div id="chartMain" style="margin-top:12px"></div>
     </div>
 
-    <div class="input-block">
-      <label class="input-label" for="amount">SIP Amount (per period)</label>
-      <input id="amount" class="input-field" type="number" step="1" min="0" value="1000" />
-    </div>
-  </div>
-
-  <!-- Row 3: Years + CAGR + Buttons in the same line -->
-  <div class="input-actions" style="margin-top:12px;">
-    <div class="inline-inputs">
-      <div>
-        <label class="input-label" for="years">Years 
-          <span id="yearsNote" class="hint" style="display:none">(max 2 years for Daily)</span>
-        </label>
-        <input id="years" class="input-field input-small" type="number" step="0.1" min="0.1" value="10" />
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Fund Growth Table</h3>
+        <div class="table-controls">
+          <div class="row-muted" style="margin-right:6px">View:</div>
+          <button class="tbl-btn active" id="tblDaily">Daily</button>
+          <button class="tbl-btn" id="tblMonthly">Monthly</button>
+          <button class="tbl-btn" id="tblYearly">Yearly</button>
+        </div>
       </div>
 
-      <div>
-        <label class="input-label" for="cagr">CAGR (%)</label>
-        <input id="cagr" class="input-field input-small" type="number" step="0.1" min="-100" value="12" />
+      <div id="growthTableContainer" style="margin-top:12px">
+        <!-- table injected here -->
       </div>
-    </div>
-
-    <div class="actions">
-      <button class="btn btn-accent" id="calcBtn">Calculate</button>
-      <button class="btn btn-ghost" id="resetBtn">Reset</button>
-      <button class="btn btn-ghost" id="exportBtn">Export CSV</button>
     </div>
   </div>
 </div>
 
 
 
-
-
-
-      <!-- Results -->
-      <div class="card">
-        <h3 style="margin-top:0">Results</h3>
-        <div class="result-grid">
-          <div class="result-item">
-            <div class="small">Total Invested</div>
-            <div class="value neutral" id="invested">₹0</div>
-          </div>
-          <div class="result-item">
-            <div class="small">Future Value (Estimated)</div>
-            <div class="value positive" id="fv">₹0</div>
-          </div>
-          <div class="result-item">
-            <div class="small">Return (₹)</div>
-            <div class="value positive" id="roiAmt">₹0</div>
-          </div>
-          <div class="result-item">
-            <div class="small">Return (%)</div>
-            <div class="value positive" id="roiPct">0%</div>
-          </div>
-        </div>
-        <div class="row-muted" style="margin-top:10px">Tip: Lumpsum is invested at time 0 and compounds along with subsequent contributions.</div>
-      </div>
-    </div>
-
-    <!-- BOTTOM ROW: Chart + Table -->
-    <div class="chart-table">
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3 style="margin:0">Growth Chart</h3>
-          <div style="display:flex;gap:8px;align-items:center">
-            <div class="seg active" data-zoom="daily" id="segDaily">Daily</div>
-            <div class="seg" data-zoom="monthly" id="segMonthly">Monthly</div>
-            <div class="seg" data-zoom="yearly" id="segYearly">Yearly</div>
-          </div>
-        </div>
-        <div id="chart" style="margin-top:12px"></div>
-      </div>
-
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3 style="margin:0">Fund Growth Table</h3>
-          <div class="table-controls">
-            <div class="row-muted" style="margin-right:6px">View:</div>
-            <button class="tbl-btn active" id="tblDaily">Daily</button>
-            <button class="tbl-btn" id="tblMonthly">Monthly</button>
-            <button class="tbl-btn" id="tblYearly">Yearly</button>
-          </div>
-        </div>
-
-        <div id="growthTableContainer" style="margin-top:12px">
-          <!-- table injected here -->
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // ===== configuration & helpers =====
+    // ===== constants & state =====
     const BASE_DAILY_PER_MONTH = 22;
     const BASE_PERIODS_PER_YEAR = BASE_DAILY_PER_MONTH * 12; // 264
     const MAX_DAILY_POINTS = 2000;
 
+    // Performance/debounce state
+    const DEBOUNCE_MS = 450;
+    let __calcTimer = null;
+    let __lastCalcKey = null;
+    let __lastResult = null;
+
+    // small helpers
     function fmt(v){ return '₹' + Math.round(v || 0).toLocaleString('en-IN'); }
     function fmtPct(v){ return Math.round(v) + '%'; }
 
-    // Build timeline at base resolution (264 per year). Accept lumpsum.
+    // build compact key of inputs to avoid unnecessary re-renders
+    function buildCalcKey(){
+      const freq = $('#freq').val();
+      const P = Math.round(Number($('#amount').val()) || 0);
+      const lumpsum = Math.round(Number($('#lumpsum').val()) || 0);
+      const annual = Math.round((Number($('#cagr').val()) || 0) * 100) / 100;
+      const years = Math.round((Number($('#years').val()) || 0) * 10) / 10;
+      // also include active zoom and active table view — changing zoom should re-render chart/table
+      const zoom = $('.seg.active').data('zoom') || 'daily';
+      const tableView = $('#tblDaily').hasClass('active') ? 'daily' : ($('#tblMonthly').hasClass('active') ? 'monthly' : 'yearly');
+      return `${freq}|P${P}|L${lumpsum}|R${annual}|Y${years}|Z${zoom}|T${tableView}`;
+    }
+
+    // schedule calculate with debounce
+    function scheduleCalculate(immediate = false){
+      if(immediate){
+        if(__calcTimer){ clearTimeout(__calcTimer); __calcTimer = null; }
+        calculate(true);
+        return;
+      }
+      if(__calcTimer) clearTimeout(__calcTimer);
+      __calcTimer = setTimeout(()=>{
+        __calcTimer = null;
+        calculate(false);
+      }, DEBOUNCE_MS);
+    }
+
+    // Build timeline at base resolution (264/year) and include lumpsum
     function buildBaseTimeline(contribFreq, P, annual, years, lumpsum){
       const basePerYear = BASE_PERIODS_PER_YEAR;
       const totalBasePeriods = Math.round(years * basePerYear);
       const r_per_base = (annual / 100) / basePerYear;
 
-      // contributions per year mapping (includes yearly)
       const contribPerYear = (contribFreq === 'daily') ? basePerYear :
                              (contribFreq === 'weekly') ? 52 :
                              (contribFreq === 'monthly') ? 12 : 1; // yearly
 
-      const contribStep = Math.max(1, Math.round(basePerYear / contribPerYear)); // daily->1, monthly->~22, weekly->~5, yearly->264
+      const contribStep = Math.max(1, Math.round(basePerYear / contribPerYear));
 
-      let balance = (lumpsum && !isNaN(lumpsum)) ? lumpsum : 0;
-      let invested = (lumpsum && !isNaN(lumpsum)) ? lumpsum : 0;
+      let balance = (!isNaN(lumpsum) && lumpsum) ? lumpsum : 0;
+      let invested = (!isNaN(lumpsum) && lumpsum) ? lumpsum : 0;
       const series = [];
 
       for(let i=1;i<=totalBasePeriods;i++){
-        // compound for this base period
         balance = balance * (1 + r_per_base);
-
-        // add contribution when period matches contribution step
         if(i % contribStep === 0){
           balance += P;
           invested += P;
         }
-
         series.push({ period: i, balance: balance, invested: invested });
       }
 
-      return { series: series, totalBasePeriods: totalBasePeriods, basePerYear: basePerYear };
+      return { series, totalBasePeriods, basePerYear };
     }
 
-    // Sample the full series for chart/table zooms
+    // sampling
     function sampleSeriesForZoom(fullSeries, zoom){
       const out = [];
       if(zoom === 'daily'){
@@ -414,7 +568,6 @@ table.growth-table tbody tr:hover{background:#fbfbfd}
         }
         return out;
       }
-
       if(zoom === 'monthly'){
         const step = Math.round(BASE_PERIODS_PER_YEAR / 12);
         let monthCounter = 0;
@@ -424,11 +577,10 @@ table.growth-table tbody tr:hover{background:#fbfbfd}
           const year = Math.ceil(monthCounter / 12);
           const monthOfYear = ((monthCounter - 1) % 12) + 1;
           const label = 'M' + monthCounter + (monthOfYear === 1 ? ' Y' + year : '');
-          out.push({ label: label, y: Math.round(s.balance), invested: Math.round(s.invested), globalIndex: s.period, monthIndex: monthCounter, monthOfYear: monthOfYear, year: year });
+          out.push({ label: label, y: Math.round(s.balance), invested: Math.round(s.invested), globalIndex: s.period, monthIndex: monthCounter, monthOfYear, year });
         }
         return out;
       }
-
       // yearly
       const stepYear = BASE_PERIODS_PER_YEAR;
       for(let i = stepYear - 1; i < fullSeries.length; i += stepYear){
@@ -439,21 +591,17 @@ table.growth-table tbody tr:hover{background:#fbfbfd}
       return out;
     }
 
-    // Apex chart with custom tooltip (shows invested & growth % + progress)
+    // Apex chart rendering (custom tooltip)
     let chart = null;
     function renderChart(points, zoomLabel){
       const investedArr = points.map(p => p.invested);
-
       const opts = {
         chart: { type: 'area', height: 360, zoom: { enabled: false } },
         series: [{ name: 'Fund Value', data: points.map(p => p.y) }],
         xaxis: {
           categories: points.map(p => p.label || ''),
           title: { text: zoomLabel },
-          labels: {
-            rotate: -30,
-            formatter: function(val, idx){ return points[idx] && points[idx].label ? points[idx].label : ''; }
-          }
+          labels: { rotate: -30, formatter: function(val, idx){ return points[idx] && points[idx].label ? points[idx].label : ''; } }
         },
         stroke: { curve: 'smooth' },
         dataLabels: { enabled: false },
@@ -461,8 +609,7 @@ table.growth-table tbody tr:hover{background:#fbfbfd}
           enabled: true,
           followCursor: true,
           custom: function(opts){
-            const si = opts.seriesIndex;
-            const dpi = opts.dataPointIndex;
+            const si = opts.seriesIndex; const dpi = opts.dataPointIndex;
             const val = opts.series[si][dpi];
             const invested = investedArr[dpi] || 0;
             const pct = invested > 0 ? Math.round(((val - invested) / invested) * 100) : 0;
@@ -470,38 +617,111 @@ table.growth-table tbody tr:hover{background:#fbfbfd}
             const label = points[dpi] && points[dpi].label ? points[dpi].label : ('Period ' + (points[dpi] ? points[dpi].globalIndex : (dpi+1)));
             const pctDisplay = (pct > 0 ? '+' : '') + pct + '%';
             const progressWidth = Math.min(100, Math.abs(pct));
-
-            const html = `
+            return `
               <div style="padding:10px;font-family:Inter, Arial, sans-serif;min-width:240px;">
                 <div style="font-weight:700;margin-bottom:6px;">${label}</div>
                 <div style="font-size:14px;">Value: <strong>₹${Math.round(val).toLocaleString('en-IN')}</strong></div>
                 <div style="font-size:13px;margin-top:6px;">Invested: <strong>₹${Math.round(invested).toLocaleString('en-IN')}</strong></div>
                 <div style="font-size:13px;margin-top:6px;">Growth: <span style="color:${color}">${pctDisplay}</span></div>
-   
-              </div>
-            `;
-            return html;
+                 </div>`;
           }
         },
         yaxis: { labels: { formatter: function(v){ return Math.round(v).toLocaleString('en-IN'); } } }
       };
-
       if(chart) chart.destroy();
-      chart = new ApexCharts(document.querySelector('#chart'), opts);
+      chart = new ApexCharts(document.querySelectorAll('#chartMain')[0], opts);
       chart.render();
     }
 
-    // calculate and update UI
-    function calculate(){
-      const freq = document.getElementById('freq').value;
-      const P = parseFloat(document.getElementById('amount').value) || 0;
-      const lumpsum = parseFloat(document.getElementById('lumpsum').value) || 0;
-      const annual = parseFloat(document.getElementById('cagr').value) || 0;
-      let years = parseFloat(document.getElementById('years').value) || 0;
+    // table generation
+    function populateTable(zoom, fullSeries){
+      const points = sampleSeriesForZoom(fullSeries, zoom);
+      let html = '<table class="growth-table"><thead><tr><th>#</th><th>Period</th><th>Value</th><th>Invested So Far</th><th>Growth</th></tr></thead><tbody>';
+      for(let i=0;i<points.length;i++){
+        const p = points[i];
+        const value = p.y;
+        const invested = p.invested || 0;
+        const growthAmt = value - invested;
+        const growthPct = invested > 0 ? Math.round((growthAmt / invested) * 100) : 0;
+        const isPos = growthAmt >= 0;
+        const icon = isPos ? '<i class="fa fa-arrow-up" style="color:var(--success)"></i>' : '<i class="fa fa-arrow-down" style="color:var(--danger)"></i>';
+        const badgeClass = isPos ? 'badge green' : 'badge red';
+        const badgeHtml = `<span class="${badgeClass}">${isPos ? '+' : ''}${growthPct}%</span>`;
+        let periodLabel = p.label || ('#' + (i+1));
+        if(zoom === 'monthly' && typeof p.monthIndex !== 'undefined'){
+          const mi = p.monthIndex, y = p.year, mOfYear = p.monthOfYear;
+          periodLabel = `M${mi} (Y${y} · ${mOfYear})`;
+        }
+        html += `<tr>
+          <td class="nowrap">${i+1}</td>
+          <td>${periodLabel}</td>
+          <td class="nowrap"><strong>${fmt(value)}</strong></td>
+          <td class="nowrap">${fmt(invested)}</td>
+          <td class="nowrap">${icon} ${badgeHtml}</td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+      html = `<div class="row-muted" style="margin-bottom:8px">Showing ${zoom.toUpperCase()} view — ${points.length} rows</div>` + html;
+      document.getElementById('growthTableContainer').innerHTML = html;
+    }
 
-      enforceDailyConstraints(); // clamp years if needed
-      years = parseFloat(document.getElementById('years').value) || 0;
+    // daily disable logic
+    function isDailyDisabled(){
+      const freq = $('#freq').val();
+      const years = parseFloat($('#years').val()) || 0;
+      if(freq !== 'daily') return true;
+      if(years > 2) return true;
+      return false;
+    }
 
+    function updateControlsState(){
+      const disabled = isDailyDisabled();
+      if(disabled) $('#segDaily, #segDaily2').addClass('disabled'); else $('#segDaily, #segDaily2').removeClass('disabled');
+      if(disabled) $('#tblDaily').addClass('disabled'); else $('#tblDaily').removeClass('disabled');
+
+      if($('#freq').val() === 'daily'){
+        $('#yearsNote').show();
+        $('#years').attr('max', 2);
+      } else {
+        $('#yearsNote').hide();
+        $('#years').removeAttr('max');
+      }
+
+      if($('#segDaily').hasClass('active') && disabled){
+        $('.seg').removeClass('active'); $('#segMonthly, #segMonthly2').addClass('active');
+      }
+      if($('#tblDaily').hasClass('active') && $('#tblDaily').hasClass('disabled')){
+        $('#tblDaily, #tblMonthly, #tblYearly').removeClass('active');
+        $('#tblMonthly').addClass('active');
+      }
+    }
+
+    function enforceDailyConstraints(){
+      const freq = $('#freq').val();
+      if(freq === 'daily'){
+        const max = 2;
+        let val = parseFloat($('#years').val()) || 0;
+        if(val > max) $('#years').val(max);
+      }
+    }
+
+    // main calculate: compute series and update UI; if forceRender=false and key unchanged, skip heavy rendering
+    function calculate(forceRender = false){
+      const key = buildCalcKey();
+      if(!forceRender && key === __lastCalcKey){
+        // nothing meaningful changed -> skip heavy render
+        return __lastResult || {};
+      }
+      __lastCalcKey = key;
+
+      // read inputs
+      const freq = $('#freq').val();
+      const P = parseFloat($('#amount').val()) || 0;
+      const lumpsum = parseFloat($('#lumpsum').val()) || 0;
+      const annual = parseFloat($('#cagr').val()) || 0;
+      const years = Math.max(0.01, parseFloat($('#years').val()) || 0);
+
+      // build series
       const base = buildBaseTimeline(freq, P, annual, years, lumpsum);
       const fullSeries = base.series;
       const invested = fullSeries.length ? fullSeries[fullSeries.length-1].invested : 0;
@@ -509,7 +729,7 @@ table.growth-table tbody tr:hover{background:#fbfbfd}
       const roiAmt = fv - invested;
       const roiPct = invested > 0 ? (roiAmt / invested) * 100 : 0;
 
-      // update results
+      // update numeric results
       document.getElementById('invested').textContent = fmt(invested);
       document.getElementById('fv').textContent = fmt(fv);
       document.getElementById('roiAmt').textContent = fmt(roiAmt);
@@ -528,196 +748,116 @@ table.growth-table tbody tr:hover{background:#fbfbfd}
         roiPctEl.className = 'value positive';
       }
 
-      // update controls: disable daily if needed
-      updateControlsState();
-
-      // chart update
+      // chart + table rendering (heavy) - only when forced or changed
       const activeZoom = $('.seg.active').data('zoom') || 'daily';
       let points = sampleSeriesForZoom(fullSeries, activeZoom);
+
+      // downsample if too many points for daily
       if(activeZoom === 'daily' && points.length > MAX_DAILY_POINTS){
         const k = Math.ceil(points.length / MAX_DAILY_POINTS);
         const ds = [];
         for(let i=0;i<points.length;i+=k) ds.push(points[i]);
         points = ds;
       }
+
+      // If daily disabled but current zoom is daily, fallback to monthly
       if(activeZoom === 'daily' && isDailyDisabled()){
-        $('.seg').removeClass('active'); $('#segMonthly').addClass('active');
+        $('.seg').removeClass('active'); $('#segMonthly,#segMonthly2').addClass('active');
         points = sampleSeriesForZoom(fullSeries, 'monthly');
       }
+
+      // render chart & table
       renderChart(points, ($('.seg.active').data('zoom') || 'daily').charAt(0).toUpperCase() + ($('.seg.active').data('zoom') || 'daily').slice(1));
 
-      // table update
-      const activeTableView = $('#tblDaily').hasClass('active') ? 'daily' : ($('#tblMonthly').hasClass('active') ? 'monthly' : 'yearly');
-      if(activeTableView === 'daily' && isDailyDisabled()){
+      const tableView = $('#tblDaily').hasClass('active') ? 'daily' : ($('#tblMonthly').hasClass('active') ? 'monthly' : 'yearly');
+      if(tableView === 'daily' && isDailyDisabled()){
         $('#tblDaily, #tblMonthly, #tblYearly').removeClass('active');
         $('#tblMonthly').addClass('active');
         populateTable('monthly', fullSeries);
       } else {
-        populateTable(activeTableView, fullSeries);
+        populateTable(tableView, fullSeries);
       }
 
-      return { freq, P, lumpsum, annual, years, invested, fv, roiAmt, roiPct, series: fullSeries };
+      // cache result
+      __lastResult = { freq, P, lumpsum, annual, years, invested, fv, roiAmt, roiPct, series: fullSeries };
+      return __lastResult;
     }
 
-    // daily enable/disable logic
-    function isDailyDisabled(){
-      const freq = $('#freq').val();
-      const years = parseFloat($('#years').val()) || 0;
-      if(freq !== 'daily') return true;
-      if(years > 2) return true;
-      return false;
-    }
-
-    function updateControlsState(){
-      const disabled = isDailyDisabled();
-      if(disabled) $('#segDaily').addClass('disabled'); else $('#segDaily').removeClass('disabled');
-      if(disabled) $('#tblDaily').addClass('disabled'); else $('#tblDaily').removeClass('disabled');
-
-      if($('#freq').val() === 'daily'){
-        $('#yearsNote').show();
-        $('#years').attr('max', 2);
-      } else {
-        $('#yearsNote').hide();
-        $('#years').removeAttr('max');
-      }
-
-      if($('#segDaily').hasClass('active') && disabled){
-        $('.seg').removeClass('active'); $('#segMonthly').addClass('active');
-      }
-      if($('#tblDaily').hasClass('active') && $('#tblDaily').hasClass('disabled')){
-        $('#tblDaily, #tblMonthly, #tblYearly').removeClass('active');
-        $('#tblMonthly').addClass('active');
-      }
-    }
-
-    function enforceDailyConstraints(){
-      const freq = $('#freq').val();
-      if(freq === 'daily'){
-        const max = 2;
-        let val = parseFloat($('#years').val()) || 0;
-        if(val > max) $('#years').val(max);
-      }
-    }
-
-    // update chart zoom defensively
-    function updateChartZoom(zoom){
-      zoom = String(zoom || $('.seg.active').data('zoom') || 'daily');
-      if(zoom === 'daily' && isDailyDisabled()) zoom = 'monthly';
-      $('.seg').removeClass('active');
-      $('#seg' + (zoom.charAt(0).toUpperCase() + zoom.slice(1))).addClass('active');
-      const freq = document.getElementById('freq').value;
-      const P = parseFloat(document.getElementById('amount').value) || 0;
-      const lumpsum = parseFloat(document.getElementById('lumpsum').value) || 0;
-      const annual = parseFloat(document.getElementById('cagr').value) || 0;
-      const years = Math.max(0.01, parseFloat(document.getElementById('years').value) || 0);
-      const base = buildBaseTimeline(freq, P, annual, years, lumpsum);
-      let points = sampleSeriesForZoom(base.series, zoom);
-      if(zoom === 'daily' && points.length > MAX_DAILY_POINTS){
-        const k = Math.ceil(points.length / MAX_DAILY_POINTS);
-        const ds = [];
-        for(let i=0;i<points.length;i+=k) ds.push(points[i]);
-        points = ds;
-      }
-      renderChart(points, zoom.charAt(0).toUpperCase() + zoom.slice(1));
-      const activeTable = $('#tblDaily').hasClass('active') ? 'daily' : ($('#tblMonthly').hasClass('active') ? 'monthly' : 'yearly');
-      if(activeTable === zoom) populateTable(zoom, base.series);
-    }
-
-    // populate table (daily/monthly/yearly)
-    function populateTable(zoom, fullSeries){
-      let baseSeries = fullSeries;
-      if(!baseSeries){
-        const freq = document.getElementById('freq').value;
-        const P = parseFloat(document.getElementById('amount').value) || 0;
-        const lumpsum = parseFloat(document.getElementById('lumpsum').value) || 0;
-        const annual = parseFloat(document.getElementById('cagr').value) || 0;
-        const years = Math.max(0.01, parseFloat(document.getElementById('years').value) || 0);
-        baseSeries = buildBaseTimeline(freq, P, annual, years, lumpsum).series;
-      }
-
-      const points = sampleSeriesForZoom(baseSeries, zoom);
-
-      let html = '<table class="growth-table"><thead><tr>';
-      html += '<th>#</th><th>Period</th><th>Value</th><th>Invested So Far</th><th>Growth</th>';
-      html += '</tr></thead><tbody>';
-
-      for(let i=0;i<points.length;i++){
-        const p = points[i];
-        const value = p.y;
-        const invested = p.invested || 0;
-        const growthAmt = value - invested;
-        const growthPct = invested > 0 ? Math.round((growthAmt / invested) * 100) : 0;
-        const isPos = growthAmt >= 0;
-        const icon = isPos ? '<i class="fa fa-arrow-up" style="color:var(--success)"></i>' : '<i class="fa fa-arrow-down" style="color:var(--danger)"></i>';
-        const badgeClass = isPos ? 'badge green' : 'badge red';
-        const badgeHtml = `<span class="${badgeClass}">${isPos ? '+' : ''}${growthPct}%</span>`;
-
-        let periodLabel = p.label || ('#' + (i+1));
-        if(zoom === 'monthly' && typeof p.monthIndex !== 'undefined'){
-          const mi = p.monthIndex;
-          const y = p.year;
-          const mOfYear = p.monthOfYear;
-          periodLabel = `M${mi} (Y${y} · ${mOfYear})`;
-        }
-
-        html += `<tr>
-          <td class="nowrap">${i+1}</td>
-          <td>${periodLabel}</td>
-          <td class="nowrap"><strong>${fmt(value)}</strong></td>
-          <td class="nowrap">${fmt(invested)}</td>
-          <td class="nowrap">${icon} ${badgeHtml}</td>
-        </tr>`;
-      }
-
-      html += '</tbody></table>';
-      html = `<div class="row-muted" style="margin-bottom:8px">Showing ${zoom.toUpperCase()} view — ${points.length} rows</div>` + html;
-      document.getElementById('growthTableContainer').innerHTML = html;
-    }
-
-    // wiring
+    // UI wiring & events (debounced)
     $(function(){
-      // initial state
+      // initial
       updateControlsState();
-      calculate();
+      calculate(true);
 
-      // input handlers
-      $('#freq').on('change', function(){ updateControlsState(); calculate(); });
-      $('#years').on('input change', function(){ enforceDailyConstraints(); updateControlsState(); calculate(); });
-      $('#amount,#cagr,#lumpsum').on('input change', function(){ calculate(); });
+      // immediate: freq change affects constraints -> immediate calculate
+      $('#freq').on('change', function(){
+        updateControlsState();
+        scheduleCalculate(true);
+      });
 
-      $('#calcBtn').on('click', function(){ calculate(); });
+      // years: enforce constraint & schedule
+      $('#years').on('input change', function(){
+        enforceDailyConstraints();
+        updateControlsState();
+        scheduleCalculate();
+      });
 
-      $('#segDaily').on('click', function(){ if(!$(this).hasClass('disabled')) updateChartZoom('daily'); });
-      $('#segMonthly').on('click', function(){ updateChartZoom('monthly'); });
-      $('#segYearly').on('click', function(){ updateChartZoom('yearly'); });
+      // numeric typing: debounced schedule
+      $('#amount, #cagr, #lumpsum').on('input', function(){
+        scheduleCalculate();
+      });
 
-      $('#tblDaily').on('click', function(){ if($(this).hasClass('disabled')) return; $('#tblDaily, #tblMonthly, #tblYearly').removeClass('active'); $(this).addClass('active'); const base = buildBaseTimeline($('#freq').val(), parseFloat($('#amount').val())||0, parseFloat($('#cagr').val())||0, Math.max(0.01,parseFloat($('#years').val())||0), parseFloat($('#lumpsum').val())||0); populateTable('daily', base.series); });
-      $('#tblMonthly').on('click', function(){ $('#tblDaily, #tblMonthly, #tblYearly').removeClass('active'); $(this).addClass('active'); const base = buildBaseTimeline($('#freq').val(), parseFloat($('#amount').val())||0, parseFloat($('#cagr').val())||0, Math.max(0.01,parseFloat($('#years').val())||0), parseFloat($('#lumpsum').val())||0); populateTable('monthly', base.series); });
-      $('#tblYearly').on('click', function(){ $('#tblDaily, #tblMonthly, #tblYearly').removeClass('active'); $(this).addClass('active'); const base = buildBaseTimeline($('#freq').val(), parseFloat($('#amount').val())||0, parseFloat($('#cagr').val())||0, Math.max(0.01,parseFloat($('#years').val())||0), parseFloat($('#lumpsum').val())||0); populateTable('yearly', base.series); });
+      // blur or enter => immediate calculate
+      $('#amount, #cagr, #lumpsum, #years').on('blur', function(){ scheduleCalculate(true); })
+        .on('keydown', function(e){ if(e.key === 'Enter') scheduleCalculate(true); });
 
-      $('#resetBtn').on('click', function(){ $('#freq').val('monthly'); $('#amount').val(1000); $('#lumpsum').val(0); $('#cagr').val(12); $('#years').val(10); updateControlsState(); calculate(); });
+      // calc/reset/export immediate actions
+      $('#calcBtn').on('click', function(){ scheduleCalculate(true); });
+
+      $('#resetBtn').on('click', function(){
+        $('#freq').val('monthly'); $('#amount').val(1000); $('#lumpsum').val(0); $('#cagr').val(12); $('#years').val(10);
+        updateControlsState();
+        scheduleCalculate(true);
+      });
 
       $('#exportBtn').on('click', function(){
-        const r = calculate();
-        const rows = [
-          ['Field','Value'],
-          ['Frequency', r.freq],
-          ['Lumpsum (one-time)', r.lumpsum],
-          ['SIP per period', r.P],
-          ['Annual CAGR (%)', r.annual],
-          ['Years', r.years],
-          ['Total Invested', r.invested],
-          ['Future Value', r.fv],
-          ['Return (₹)', r.roiAmt],
-          ['Return (%)', r.roiPct]
-        ];
-        const csv = rows.map(function(rw){
-          return rw.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
-        }).join('\n');
-        const blob = new Blob([csv], {type:'text/csv'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'sip_calculation.csv'; a.click(); URL.revokeObjectURL(url);
+        scheduleCalculate(true);
+        // small timeout to ensure calculate finished
+        setTimeout(function(){
+          const r = __lastResult || calculate(true);
+          const rows = [
+            ['Field','Value'],
+            ['Frequency', r.freq],
+            ['Lumpsum (one-time)', r.lumpsum],
+            ['SIP per period', r.P],
+            ['Annual CAGR (%)', r.annual],
+            ['Years', r.years],
+            ['Total Invested', r.invested],
+            ['Future Value', r.fv],
+            ['Return (₹)', r.roiAmt],
+            ['Return (%)', r.roiPct]
+          ];
+          const csv = rows.map(function(rw){ return rw.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(','); }).join('\n');
+          const blob = new Blob([csv], {type:'text/csv'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href = url; a.download = 'sip_calculation.csv'; a.click(); URL.revokeObjectURL(url);
+        }, 80);
       });
+
+      // chart zoom segments
+      $('#segDaily, #segMonthly, #segYearly, #segDaily2, #segMonthly2, #segYearly2').on('click', function(){
+        if($(this).hasClass('disabled')) return;
+        $('.seg').removeClass('active');
+        const zoom = $(this).data('zoom');
+        // activate both top & bottom segments
+        $('#segDaily, #segMonthly, #segYearly, #segDaily2, #segMonthly2, #segYearly2').filter(function(){ return $(this).data('zoom') === zoom; }).addClass('active');
+        scheduleCalculate(true);
+      });
+
+      // table view buttons
+      $('#tblDaily').on('click', function(){ if($(this).hasClass('disabled')) return; $('#tblDaily,#tblMonthly,#tblYearly').removeClass('active'); $(this).addClass('active'); const base = buildBaseTimeline($('#freq').val(), parseFloat($('#amount').val())||0, parseFloat($('#cagr').val())||0, Math.max(0.01,parseFloat($('#years').val())||0), parseFloat($('#lumpsum').val())||0); populateTable('daily', base.series); });
+      $('#tblMonthly').on('click', function(){ $('#tblDaily,#tblMonthly,#tblYearly').removeClass('active'); $(this).addClass('active'); const base = buildBaseTimeline($('#freq').val(), parseFloat($('#amount').val())||0, parseFloat($('#cagr').val())||0, Math.max(0.01,parseFloat($('#years').val())||0), parseFloat($('#lumpsum').val())||0); populateTable('monthly', base.series); });
+      $('#tblYearly').on('click', function(){ $('#tblDaily,#tblMonthly,#tblYearly').removeClass('active'); $(this).addClass('active'); const base = buildBaseTimeline($('#freq').val(), parseFloat($('#amount').val())||0, parseFloat($('#cagr').val())||0, Math.max(0.01,parseFloat($('#years').val())||0), parseFloat($('#lumpsum').val())||0); populateTable('yearly', base.series); });
 
       // initial table view
       $('#tblDaily').trigger('click');
